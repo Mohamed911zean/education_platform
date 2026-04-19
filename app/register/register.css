@@ -1,0 +1,91 @@
+:root {
+    /* ألوان الـ Dark Mode الأساسية */
+    --bg-base: #121212;
+    /* الخلفية الأساسية للصفحة (أسود عميق) */
+    --bg-elevated: #1a1e2a;
+    /* لون الكارت نفسه */
+    --text-primary: #f8fafc;
+    --text-secondary: #a1a1aa;
+    --text-muted: #52525b;
+
+    --accent: #ff3366;
+    --accent-teal: #00d4aa;
+    --accent-blue: #4d9fff;
+    --accent-warm: #ff6b35;
+
+    /* الحدود تم تعديلها لتكون شفافة ومناسبة للدارك مود */
+    --border-subtle: rgba(255, 255, 255, 0.03);
+    --border-default: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.15);
+
+    --font-cairo: 'Cairo', sans-serif;
+    --font-syne: 'Syne', sans-serif;
+}
+
+body {
+    background-color: var(--bg-base);
+    margin: 0;
+}
+
+/* تنسيقات الإدخال الأساسية */
+.form-label {
+    display: block;
+    font-family: var(--font-cairo);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.form-input {
+    width: 100%;
+    height: 52px;
+    padding: 0 16px;
+    background: var(--bg-base);
+    border: 1px solid var(--border-default);
+    border-radius: 14px;
+    font-family: var(--font-cairo);
+    font-size: 15px;
+    color: var(--text-primary);
+    outline: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.form-input::placeholder {
+    color: var(--text-muted);
+}
+
+.form-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(255, 51, 102, 0.15);
+    background: var(--bg-elevated);
+}
+
+/* تنسيقات الأزرار */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-cairo);
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    /* الانتقال هيتولاه framer-motion عشان ميحصلش Conflict */
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-warm) 100%);
+    color: white;
+    box-shadow: 0 8px 20px rgba(255, 51, 102, 0.25);
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-default);
+}
+
+.google-btn:hover {
+    /* تجنب اللون الأبيض في الهوفر في الدارك مود */
+    border-color: var(--border-strong) !important;
+}

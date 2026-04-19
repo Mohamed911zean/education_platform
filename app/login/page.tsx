@@ -50,16 +50,6 @@ export default function LoginPage() {
             </div>
           ))}
         </div>
-        <div style={{ marginTop: 32, padding: 20, background: "rgba(232,48,74,0.05)", border: "1px solid rgba(232,48,74,0.15)", borderRadius: "var(--radius-lg)", maxWidth: 300 }}>
-          <p style={{ fontFamily: "Cairo, sans-serif", fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.9, fontStyle: "italic" }}>
-            "EduRise خلّتني أحب المذاكرة من جديد. شكراً على كل درس"
-          </p>
-          <div style={{ marginTop: 10, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
-            <div className="avatar-placeholder" style={{ width: 28, height: 28, background: "rgba(232,48,74,0.1)", color: "var(--accent)", fontFamily: "Cairo, sans-serif", fontSize: 11, fontWeight: 800 }}>س</div>
-            <span style={{ fontFamily: "Cairo, sans-serif", fontSize: 12, color: "var(--text-secondary)", fontWeight: 700 }}>سارة أحمد</span>
-            <span className="badge badge-grade">الصف الثالث</span>
-          </div>
-        </div>
       </div>
 
       {/* Right panel — form */}

@@ -2,8 +2,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Eye, EyeOff, ArrowRight, Zap, Check, CheckCircle } from "lucide-react";
+import { motion } from 'framer-motion'
 
-const SUBJECTS = ["الأحياء", "الكيمياء", "الفيزياء", "الرياضيات", "اللغة العربية", "اللغة الإنجليزية", "الجيولوجيا", "التاريخ"];
 const GRADES = ["الصف الأول", "الصف الثاني", "الصف الثالث"];
 
 function StepIndicator({ current }: { current: number }) {
@@ -69,42 +69,36 @@ function PasswordStrength({ password }: { password: string }) {
 function BrandPanelMini() {
   return (
     <div className="auth-left-panel" style={{
-      background:
-        "radial-gradient(ellipse 80% 60% at 50% 30%, rgba(255,51,102,0.12) 0%, transparent 70%), var(--bg-surface)",
-      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-      padding: "48px 40px", position: "relative", overflow: "hidden",
-    }}>
-      <div style={{
-        position: "absolute", inset: 0,
-        backgroundImage:
-          "repeating-linear-gradient(rgba(255,255,255,0.013) 0px,rgba(255,255,255,0.013) 1px,transparent 1px,transparent 48px)," +
-          "repeating-linear-gradient(90deg,rgba(255,255,255,0.013) 0px,rgba(255,255,255,0.013) 1px,transparent 1px,transparent 48px)",
-        pointerEvents: "none",
-      }} />
-      <div style={{ position: "relative", textAlign: "center", maxWidth: 320 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, marginBottom: 24 }}>
-          <div style={{
-            width: 64, height: 64, borderRadius: 16,
-            background: "linear-gradient(135deg, #ff3366 0%, #ff6b35 100%)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            boxShadow: "0 20px 60px var(--glow-red)",
-          }}>
-            <Zap size={32} color="white" fill="white" />
-          </div>
+        flex: "0 0 45%", background: "var(--bg-surface)",
+        borderLeft: "1px solid var(--border-default)",
+        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+        padding: 48, textAlign: "center",
+      }}>
+        <div style={{ width: 100, height: 100, borderRadius: "50%", background: "rgba(232,48,74,0.1)", border: "3px solid var(--accent)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 48, marginBottom: 20 }}>
+          👨‍🏫
         </div>
-        <div style={{ fontFamily: "var(--font-syne)", fontWeight: 800, fontSize: 32, color: "var(--text-primary)", marginBottom: 12 }}>EduRise</div>
-        <div style={{ fontFamily: "var(--font-cairo)", fontSize: 18, fontWeight: 700, color: "var(--text-primary)", marginBottom: 24 }}>انضم لنصف مليون طالب</div>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          {["شرح مبسط ومركز", "خطط مذاكرة ذكية", "تدريبات عملية", "متابعة دورية وتقييم"].map(item => (
-            <div key={item} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <CheckCircle size={18} color="var(--accent-teal)" />
-              <span style={{ fontFamily: "var(--font-cairo)", fontSize: 14, color: "var(--text-secondary)" }}>{item}</span>
+        <h2 style={{ fontFamily: "Cairo, sans-serif", fontSize: 24, fontWeight: 800, color: "var(--text-primary)", marginBottom: 8 }}>مستر أحمد النجار</h2>
+        <p style={{ fontFamily: "Cairo, sans-serif", fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.8, maxWidth: 300, marginBottom: 32 }}>
+          مدرس الأحياء — منصة التعلم الرسمية لطلاب الثانوية العامة
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12, width: "100%", maxWidth: 300 }}>
+          {[
+            { icon: "👨‍🎓", val: "+5,000", label: "طالب" },
+            { icon: "📹", val: "+500", label: "ساعة محتوى" },
+            { icon: "⭐", val: "4.9/5", label: "تقييم الطلاب" },
+          ].map((s, i) => (
+            <div key={i} style={{
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
+              background: "var(--bg-elevated)", border: "1px solid var(--border-default)",
+              borderRadius: "var(--radius-md)", padding: "12px 20px",
+            }}>
+              <span style={{ fontSize: 18 }}>{s.icon}</span>
+              <span style={{ fontFamily: "Syne, var(--font-syne), sans-serif", fontSize: 18, fontWeight: 800, color: "var(--text-primary)" }}>{s.val}</span>
+              <span style={{ fontFamily: "Cairo, sans-serif", fontSize: 13, color: "var(--text-muted)" }}>{s.label}</span>
             </div>
           ))}
         </div>
       </div>
-    </div>
   );
 }
 
@@ -127,31 +121,71 @@ export default function RegisterPage() {
 
   const gradeColors = ["var(--accent-blue)", "var(--accent-warm)", "var(--accent)"];
 
-  if (done) {
+ if (done) {
     return (
-      <div className="page-bg" style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ textAlign: "center", maxWidth: 480, padding: "0 24px" }}>
-          {/* Animated checkmark */}
-          <div style={{ width: 80, height: 80, borderRadius: "50%", background: "rgba(0,212,170,0.1)", border: "2px solid var(--accent-teal)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
-            <svg width="40" height="40" viewBox="0 0 40 40">
-              <path d="M8 20 L17 29 L32 12" stroke="var(--accent-teal)" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round"
-                strokeDasharray="50" strokeDashoffset="0" style={{ animation: "drawCheck 600ms ease forwards" }} />
+      <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-6">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }} 
+          animate={{ opacity: 1, scale: 1 }} 
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="text-center max-w-md w-full"
+        >
+          {/* Animated Checkmark */}
+          <motion.div 
+            initial={{ scale: 0 }} 
+            animate={{ scale: 1 }} 
+            transition={{ type: "spring", stiffness: 200, damping: 15 }}
+            className="w-20 h-20 rounded-full bg-rose-500/10 border-2 border-rose-500 flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(226,29,72,0.2)]"
+          >
+            <svg width="40" height="40" viewBox="0 0 40 40" className="text-rose-500">
+              <motion.path 
+                d="M8 20 L17 29 L32 12" 
+                stroke="currentColor" 
+                strokeWidth="3" 
+                fill="none" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+              />
             </svg>
-          </div>
-          {/* Confetti */}
-          <div style={{ fontSize: 32, marginBottom: 20 }}>
-            {["🎉", "⭐", "🎯", "🔥", "🏆"].map((em, i) => (
-              <span key={i} style={{ display: "inline-block", margin: "0 4px", animation: `confettiPop ${0.5 + i * 0.1}s ease forwards ${i * 0.1}s` }}>{em}</span>
+          </motion.div>
+
+          {/* Confetti Elements */}
+          <div className="text-3xl mb-6 flex justify-center gap-2">
+            {["🎉", "⭐", "🎯", "🔥", "🏆"].map((em, index) => (
+              <motion.span 
+                key={index} 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 + (index * 0.1), type: "spring" }}
+                className="inline-block cursor-default"
+              >
+                {em}
+              </motion.span>
             ))}
           </div>
-          <h2 style={{ fontFamily: "var(--font-cairo)", fontSize: "clamp(22px,3vw,28px)", fontWeight: 800, color: "var(--text-primary)", marginBottom: 8 }}>
-            أهلاً بيك في EduRise! 🎉
+
+          {/* Text Content */}
+          <h2 className="text-2xl md:text-3xl font-black text-white mb-3">
+            أهلاً بيك يا بطل! 🎉
           </h2>
-          <p style={{ fontFamily: "var(--font-cairo)", fontSize: 15, color: "var(--text-secondary)", marginBottom: 32 }}>
+          
+          <p className="text-sm md:text-base text-neutral-400 mb-8 leading-relaxed">
             حسابك اتعمل بنجاح. استعد لرحلة تعليمية استثنائية.
           </p>
-          <Link href="/dashboard" className="btn btn-primary btn-lg" id="start-learning-btn">ابدأ التعلم الآن ←</Link>
-        </div>
+
+          {/* Call to Action */}
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+            <Link 
+              href="/dashboard" 
+              className="flex items-center justify-center w-full h-14 bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-400 hover:to-rose-500 text-white rounded-xl font-bold text-lg transition-all shadow-[0_4px_12px_rgba(226,29,72,0.3)]"
+            >
+              ابدأ التعلم الآن ←
+            </Link>
+          </motion.div>
+        </motion.div>
       </div>
     );
   }
@@ -271,34 +305,7 @@ export default function RegisterPage() {
                   </div>
                 </div>
 
-                <div style={{ marginBottom: 28 }}>
-                  <label className="form-label">المواد اللي بتذاكرها</label>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                    {SUBJECTS.map(s => {
-                      const selected = subjects.includes(s);
-                      return (
-                        <button
-                          key={s}
-                          id={`subject-${s}`}
-                          onClick={() => toggleSubject(s)}
-                          style={{
-                            padding: "6px 14px", borderRadius: "var(--radius-sm)",
-                            background: selected ? "rgba(255,51,102,0.1)" : "var(--bg-elevated)",
-                            border: `1px solid ${selected ? "var(--border-accent)" : "var(--border-default)"}`,
-                            color: selected ? "var(--accent)" : "var(--text-muted)",
-                            fontFamily: "var(--font-cairo)", fontSize: 13, fontWeight: 600, cursor: "pointer",
-                            display: "flex", alignItems: "center", gap: 6,
-                            transition: "all 150ms",
-                          }}
-                        >
-                          {selected && <Check size={11} />}
-                          {s}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
+                
                 <div style={{ display: "flex", gap: 12 }}>
                   <button id="step2-back" className="btn btn-ghost" style={{ flex: 1 }} onClick={() => setStep(1)}>← رجوع</button>
                   <button id="step2-next" className="btn btn-primary" style={{ flex: 2 }} onClick={() => setStep(3)}>التالي ←</button>

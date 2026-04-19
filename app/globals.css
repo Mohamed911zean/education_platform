@@ -3,8 +3,8 @@
 /* ─── Design Tokens ─────────────────────────────────────── */
 :root {
   /* Backgrounds */
-  --bg-base:       #0c0e14;
-  --bg-surface:    #13161f;
+  --bg-base:       #121212;
+  --bg-surface:    #0b0c0f;
   --bg-elevated:   #1a1e2a;
   --bg-overlay:    #20253a;
 

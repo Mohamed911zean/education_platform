@@ -1,0 +1,463 @@
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}
+
+.hero-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.stats-wrap {
+  display: flex;
+}
+.stat-item {
+  padding: 0 28px;
+  border-left: 1px solid var(--border-subtle);
+  flex: 1;
+}
+.stat-item:last-child {
+  border-left: none;
+}
+.stat-item:first-child {
+  padding-right: 0;
+}
+
+.ticker-scroll::-webkit-scrollbar {
+  display: none;
+}
+.ticker-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@media (max-width: 860px) {
+  .hero-grid { 
+    grid-template-columns: 1fr !important;
+    text-align: center;
+    gap: 48px !important;
+  }
+  .hero-left {
+    align-items: center;
+  }
+  .hero-buttons {
+    justify-content: center;
+  }
+  .hero-visual { 
+    display: flex !important;
+    order: -1;
+  }
+  .stats-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .stat-item {
+    border-left: none;
+    padding: 0 !important;
+  }
+  
+  .about-grid { 
+    grid-template-columns: 1fr !important; 
+    gap: 32px !important;
+    text-align: center;
+  }
+  .about-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .about-chips {
+    justify-content: center;
+  }
+
+  .grade-grid { grid-template-columns: 1fr !important; }
+  .features-grid { grid-template-columns: 1fr !important; }
+  .footer-grid { grid-template-columns: 1fr 1fr !important; }
+}
+
+@media (max-width: 640px) {
+  .footer-grid { grid-template-columns: 1fr !important; }
+  #hero-cta, #hero-courses, #about-cta, #footer-cta-register, #footer-cta-login {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .swiper {
+    padding: 10px 4px 50px;
+  }
+
+  .swiper-slide {
+    height: auto;
+  }
+
+  /* الأسهم */
+  .swiper-button-next,
+  .swiper-button-prev {
+    color: #e8304a;
+    background: rgba(232,48,74,0.1);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    backdrop-filter: blur(6px);
+    transition: all 0.25s ease;
+  }
+
+  .swiper-button-next:hover,
+  .swiper-button-prev:hover {
+    background: #e8304a;
+    color: #fff;
+    transform: scale(1.1);
+  }
+
+  /* النقاط */
+  .swiper-pagination-bullet {
+    background: var(--text-muted);
+    opacity: 0.4;
+    transition: all 0.2s;
+  }
+
+  .swiper-pagination-bullet-active {
+    background: #e8304a;
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+/* testimonials carousel */
+.swiper {
+  padding: 10px 0 50px;
+}
+
+/* الكارت اللي في النص */
+.swiper-slide-active {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* اللي جنبها */
+.swiper-slide {
+  opacity: 0.6;
+  transform: scale(0.94);
+  transition: all 0.35s ease;
+}
+
+.swiper-slide-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* dots */
+.swiper-pagination-bullet {
+  background: var(--text-muted);
+  opacity: 0.3;
+}
+
+.swiper-pagination-bullet-active {
+  background: #e8304a;
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+/* Feature Card */
+.feature-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: 16px;
+  padding: 22px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  transition: background 220ms, border-color 220ms, transform 220ms;
+  cursor: default;
+}
+.feature-card:hover {
+  background: var(--bg-elevated);
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+}
+.feature-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(232,48,74,0.08);
+  border: 1px solid rgba(232,48,74,0.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+  transition: transform 220ms;
+}
+.feature-card:hover .feature-card-icon {
+  transform: scale(1.08);
+}
+.feature-card-title {
+  font-family: 'Cairo', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 5px;
+}
+.feature-card-desc {
+  font-family: 'Cairo', sans-serif;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+/* Testimonial Card */
+.testimonial-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: 18px;
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.testimonial-stars {
+  display: flex;
+  gap: 2px;
+}
+.testimonial-quote {
+  font-family: 'Cairo', sans-serif;
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 2;
+  flex: 1;
+  border-right: 3px solid;
+  padding-right: 14px;
+  margin: 0;
+}
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-subtle);
+}
+.testimonial-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  font-family: 'Cairo', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.testimonial-name {
+  font-family: 'Cairo', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.testimonial-grade {
+  font-family: 'Cairo', sans-serif;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Course Card */
+.course-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 260ms ease, border-color 260ms ease, box-shadow 260ms ease;
+  transform: translateY(0);
+}
+.course-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--course-color-hover);
+  box-shadow: 0 12px 40px var(--course-color-shadow);
+}
+.course-card-top {
+  height: 6px;
+  background: var(--course-color);
+  opacity: 0.6;
+  transition: opacity 260ms;
+}
+.course-card:hover .course-card-top {
+  opacity: 1;
+}
+.course-card-thumb {
+  height: 140px;
+  background: color-mix(in srgb, var(--course-color) 6%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.course-card-grade-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 88px;
+  font-weight: 900;
+  color: var(--course-color);
+  opacity: 0.12;
+  line-height: 1;
+  user-select: none;
+  transform: scale(1);
+  transition: transform 320ms ease;
+}
+.course-card:hover .course-card-grade-num {
+  transform: scale(1.06);
+}
+.course-card-badges {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.course-card-badge-grade {
+  background: color-mix(in srgb, var(--course-color) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--course-color) 25%, transparent);
+  color: var(--course-color);
+  font-family: 'Cairo', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 100px;
+}
+.course-card-badge-new {
+  background: #f59e0b;
+  color: #000;
+  font-family: 'Cairo', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 100px;
+}
+.course-card-badge-free {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: #10b981;
+  color: #fff;
+  font-family: 'Cairo', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 100px;
+}
+.course-card-content {
+  padding: 20px 22px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.course-card-title {
+  font-family: 'Cairo', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+.course-card-desc {
+  font-family: 'Cairo', sans-serif;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+.course-card-meta {
+  display: flex;
+  gap: 14px;
+  margin-top: 2px;
+}
+.course-card-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.course-card-stars {
+  display: flex;
+  gap: 1px;
+  align-items: center;
+}
+.course-card-price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-subtle);
+}
+.course-card-price-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.course-card-free {
+  font-family: 'Cairo', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: #10b981;
+}
+.course-card-original {
+  font-family: 'Cairo', sans-serif;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+.course-card-price {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--course-color);
+}
+.course-card-currency {
+  font-family: 'Cairo', sans-serif;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.course-card-action {
+  background: var(--course-color);
+  color: #fff;
+  font-family: 'Cairo', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 18px;
+  border-radius: 10px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: opacity 200ms, transform 200ms;
+}
+.course-card-action:hover {
+  opacity: 0.88;
+  transform: scale(1.04);
+}
+
+/* Stat Counter */
+.stat-counter {
+  text-align: center;
+}
+.stat-counter-value {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+  letter-spacing: -1px;
+}
+.stat-counter-label {
+  font-family: 'Cairo', sans-serif;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  letter-spacing: 0.02em;
+}

@@ -25,22 +25,43 @@ export default function Navbar() {
   return (
     <>
       <header style={{
-        position: "fixed", top: 0, right: 0, left: 0,
-        zIndex: 100,
-        background: scrolled ? "rgba(12,14,20,0.96)" : "transparent",
-        backdropFilter: scrolled ? "blur(16px)" : "none",
-        borderBottom: scrolled ? "1px solid var(--border-subtle)" : "none",
-        transition: "background 200ms, border-color 200ms",
-      }}>
+  position: "fixed",
+  top: 12,
+  right: 0,
+  left: 0,
+  zIndex: 100,
+  display: "flex",
+  justifyContent: "center",
+  pointerEvents: "none",
+}}>
         <div style={{
-          maxWidth: 1200, margin: "0 auto",
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          padding: "0 24px", height: 64,
-        }}>
+  width: "calc(100% - 32px)",
+  maxWidth: 1100,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: "0 20px",
+  height: 60,
+
+  background: scrolled
+    ? "rgba(12,14,20,0.85)"
+    : "rgba(12,14,20,0.6)",
+
+  backdropFilter: "blur(14px)",
+  border: "1px solid var(--border-subtle)",
+  borderRadius: 16,
+
+  boxShadow: scrolled
+    ? "0 8px 30px rgba(0,0,0,0.25)"
+    : "none",
+
+  transition: "all 0.25s ease",
+  pointerEvents: "auto",
+}}>
           {/* Logo */}
           <Link href="/" id="navbar-logo" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
             <div style={{
-              width: 36, height: 36, borderRadius: 10,
+              width: 40, height: 40, borderRadius: 10,
               background: "var(--accent)",
               display: "flex", alignItems: "center", justifyContent: "center",
             }}>
@@ -81,7 +102,7 @@ export default function Navbar() {
           {/* Auth buttons */}
           <div style={{ display: "flex", gap: 10, alignItems: "center" }} className="desktop-nav">
             <Link href="/login" id="nav-login" className="btn btn-ghost btn-sm">تسجيل الدخول</Link>
-            <Link href="/register" id="nav-register" className="btn btn-primary btn-sm">ابدأ مجاناً ←</Link>
+            <Link href="/register" id="nav-register" className="btn btn-primary btn-sm"> حساب جديد</Link>
           </div>
 
           {/* Mobile hamburger */}
