@@ -14,8 +14,6 @@ The visual language is built around the feeling of studying late at night — im
 
 ---
 
-## Design Technologies
--Tailwindcss , any library needed to make best design system
 
 ## Design Tokens
 
@@ -1329,7 +1327,7 @@ Mobile (< 768px):
 
 ## Implementation Notes
 
-**Framework recommendation:** Next.js 15 App Router with TypeScript. Tailwind CSS v4 for utility classes, CSS custom properties for the token system above.
+**Framework recommendation:** Next.js 16 (latest version) App Router with TypeScript. Tailwind CSS v4 for utility classes, CSS custom properties for the token system above.
 
 **Font loading:** Google Fonts with `display=swap`. Preload Cairo 700 and 900 as critical.
 
