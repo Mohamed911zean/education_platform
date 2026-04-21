@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Cairo, Syne, JetBrains_Mono } from "next/font/google";
+import { Cairo, Syne } from "next/font/google";
+import { ThemeProvider } from "next-themes";
 import "./globals.css";
 
 const cairo = Cairo({
   variable: "--font-cairo",
   subsets: ["arabic", "latin"],
-  weight: ["300", "400", "600", "700", "800", "900"],
+  weight: ["400", "600", "700", "800", "900"],
   display: "swap",
   preload: true,
 });
@@ -17,20 +18,13 @@ const syne = Syne({
   display: "swap",
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains",
-  subsets: ["latin"],
-  weight: ["400"],
-  display: "swap",
-});
-
 export const metadata: Metadata = {
-  title: "EduRise — منصة التعليم الثانوي الأولى في مصر",
-  description: "اكتشف طريقة جديدة تجعل التفوق حتمياً. أكثر من 500,000 طالب يتعلمون على EduRise.",
-  keywords: "تعليم, ثانوي, مصر, كورسات, مذاكرة, EduRise",
+  title: "منصة المستر — مستر أحمد النجار | الأحياء",
+  description: "منصة التعليم الرسمية لمستر أحمد النجار — مادة الأحياء لطلاب الثانوية العامة في مصر.",
+  keywords: "أحياء, ثانوية عامة, مصر, كورسات, مستر أحمد النجار, منصة المستر",
   openGraph: {
-    title: "EduRise — منصة التعليم الثانوي الأولى في مصر",
-    description: "اكتشف طريقة جديدة تجعل التفوق حتمياً.",
+    title: "منصة المستر — مستر أحمد النجار",
+    description: "شرح الأحياء بطريقة مبتكرة لطلاب الثانوية العامة.",
     locale: "ar_EG",
     type: "website",
   },
@@ -45,9 +39,17 @@ export default function RootLayout({
     <html
       lang="ar"
       dir="rtl"
-      className={`${cairo.variable} ${syne.variable} ${jetbrainsMono.variable}`}
+      suppressHydrationWarning
+      className={`${cairo.variable} ${syne.variable}`}
     >
-      <body className="min-h-screen">{children}</body>
+      <body
+        className="min-h-screen font-cairo"
+        style={{ fontFamily: "var(--font-cairo, 'Cairo'), sans-serif" }}
+      >
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

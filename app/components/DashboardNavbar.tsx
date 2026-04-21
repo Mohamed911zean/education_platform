@@ -1,141 +1,145 @@
 "use client";
-import { useState } from "react";
-import Link from "next/link";
-import { Search, Bell, ChevronDown, Settings, LogOut, User } from "lucide-react";
 
-interface Props {
-  breadcrumb?: { label: string; href?: string }[];
+import Link from "next/link";
+import { Bell, Search, ChevronDown, User, Settings, LogOut } from "lucide-react";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { ThemeToggle } from "@/app/components/ThemeToggle";
+
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
 }
 
-export default function DashboardNavbar({ breadcrumb }: Props) {
-  const [showDropdown, setShowDropdown] = useState(false);
+interface DashboardNavbarProps {
+  breadcrumb?: BreadcrumbItem[];
+}
 
+export function DashboardNavbar({ breadcrumb }: DashboardNavbarProps) {
   return (
-    <header style={{
-      height: 60, position: "sticky", top: 0, zIndex: 20,
-      background: "var(--bg-surface)",
-      borderBottom: "1px solid var(--border-default)",
-      display: "flex", alignItems: "center",
-      padding: "0 24px", gap: 16,
-    }}>
-      {/* Breadcrumb */}
-      <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 6 }}>
-        {breadcrumb?.map((b, i) => (
-          <span key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            {i > 0 && <span style={{ color: "var(--text-muted)", fontSize: 12 }}>/</span>}
-            {b.href ? (
-              <Link href={b.href} style={{ fontFamily: "Cairo, sans-serif", fontSize: 13, color: "var(--text-muted)", textDecoration: "none" }}>{b.label}</Link>
-            ) : (
-              <span style={{ fontFamily: "Cairo, sans-serif", fontSize: 13, fontWeight: 700, color: "var(--text-primary)" }}>{b.label}</span>
-            )}
-          </span>
-        ))}
-      </div>
+    <header
+      id="dashboard-navbar"
+      className="
+        sticky top-0 z-20
+        flex items-center gap-4 px-6 h-16
+        bg-[var(--bg-surface)] border-b border-[var(--border-default)]
+      "
+    >
+      {/* Breadcrumb — RTL start (right) */}
+      <nav className="flex items-center gap-2 flex-1 min-w-0" aria-label="breadcrumb">
+        {breadcrumb && breadcrumb.length > 0 ? (
+          breadcrumb.map((crumb, i) => (
+            <span key={i} className="flex items-center gap-2">
+              {i > 0 && <span className="text-[var(--text-muted)] text-xs">/</span>}
+              {crumb.href ? (
+                <Link
+                  href={crumb.href}
+                  className="text-sm font-bold text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                >
+                  {crumb.label}
+                </Link>
+              ) : (
+                <span className="text-sm font-bold text-[var(--text-primary)]">{crumb.label}</span>
+              )}
+            </span>
+          ))
+        ) : (
+          <span className="text-sm font-bold text-[var(--text-primary)]">لوحة التحكم</span>
+        )}
+      </nav>
 
       {/* Search */}
-      <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
-        <Search size={14} color="var(--text-muted)" style={{ position: "absolute", right: 12 }} />
+      <div className="relative hidden sm:block">
+        <Search
+          size={14}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]"
+        />
         <input
-          type="text"
           id="dashboard-search"
-          placeholder="بحث في الدروس..."
-          style={{
-            background: "var(--bg-elevated)", border: "1px solid var(--border-default)",
-            borderRadius: "var(--radius-md)", padding: "7px 36px 7px 14px",
-            fontFamily: "Cairo, sans-serif", fontSize: 13, color: "var(--text-primary)",
-            outline: "none", width: 200,
-          }}
-          onFocus={e => { (e.target as HTMLElement).style.borderColor = "var(--accent)"; }}
-          onBlur={e => { (e.target as HTMLElement).style.borderColor = "var(--border-default)"; }}
+          type="search"
+          placeholder="ابحث..."
+          className="
+            w-[200px] h-9 pr-9 pl-4 text-sm
+            bg-[var(--bg-elevated)] border border-[var(--border-default)]
+            rounded-full outline-none transition-all duration-150
+            text-[var(--text-primary)] placeholder:text-[var(--text-muted)]
+            focus:border-[var(--accent)] focus:ring-2 focus:ring-[rgba(232,48,74,0.12)]
+            font-cairo
+          "
         />
       </div>
 
-      {/* Notifications */}
-      <button id="notifications-btn" style={{
-        position: "relative", padding: 8, background: "transparent",
-        border: "none", cursor: "pointer", color: "var(--text-muted)",
-        borderRadius: "var(--radius-md)", transition: "background 150ms",
-      }}
-        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "var(--bg-elevated)"; }}
-        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
+      {/* Theme toggle */}
+      <ThemeToggle />
+
+      {/* Notification bell */}
+      <button
+        id="navbar-bell"
+        aria-label="الإشعارات"
+        className="relative p-2 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-colors duration-150"
       >
         <Bell size={18} />
-        <span style={{
-          position: "absolute", top: 6, left: 6,
-          width: 8, height: 8, borderRadius: "50%",
-          background: "var(--accent)", border: "2px solid var(--bg-surface)",
-        }} />
+        <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[var(--accent)] ring-2 ring-[var(--bg-surface)]" />
       </button>
 
       {/* Avatar dropdown */}
-      <div style={{ position: "relative" }}>
-        <button
-          id="user-avatar-btn"
-          onClick={() => setShowDropdown(!showDropdown)}
-          style={{
-            display: "flex", alignItems: "center", gap: 8,
-            background: "var(--bg-elevated)", border: "1px solid var(--border-default)",
-            borderRadius: "var(--radius-full)", padding: "5px 12px 5px 8px",
-            cursor: "pointer", transition: "border-color 150ms",
-          }}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "var(--border-strong)"; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "var(--border-default)"; }}
+      <Menu as="div" className="relative">
+        <MenuButton
+          id="navbar-avatar-btn"
+          className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-[var(--bg-elevated)] transition-colors duration-150"
         >
-          <div className="avatar-placeholder" style={{
-            width: 28, height: 28, background: "rgba(232,48,74,0.12)",
-            color: "var(--accent)", fontFamily: "Cairo, sans-serif", fontSize: 12, fontWeight: 800,
-          }}>أح</div>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-            <span style={{ fontFamily: "Cairo, sans-serif", fontSize: 12, fontWeight: 700, color: "var(--text-primary)" }}>أحمد</span>
-            <span style={{ fontFamily: "Cairo, sans-serif", fontSize: 10, color: "var(--text-muted)" }}>الصف الثالث</span>
+          <div className="w-8 h-8 rounded-full bg-[var(--accent)] flex items-center justify-center text-white text-xs font-bold">
+            أح
           </div>
-          <ChevronDown size={13} color="var(--text-muted)" />
-        </button>
+          <ChevronDown size={14} className="text-[var(--text-muted)] hidden sm:block" />
+        </MenuButton>
 
-        {showDropdown && (
-          <div style={{
-            position: "absolute", top: "calc(100% + 8px)", left: 0,
-            background: "var(--bg-elevated)", border: "1px solid var(--border-default)",
-            borderRadius: "var(--radius-lg)", padding: 8, minWidth: 180,
-            boxShadow: "var(--shadow-lg)", animation: "slideDown 150ms ease",
-            zIndex: 10,
-          }}>
-            {[
-              { icon: User, label: "حسابي", href: "/account" },
-              { icon: Settings, label: "الإعدادات", href: "/account" },
-            ].map(item => (
-              <Link key={item.label} href={item.href} id={`dropdown-${item.label}`}
-                onClick={() => setShowDropdown(false)}
-                style={{
-                  display: "flex", alignItems: "center", gap: 10,
-                  padding: "10px 12px", borderRadius: "var(--radius-md)",
-                  textDecoration: "none", color: "var(--text-secondary)",
-                  fontFamily: "Cairo, sans-serif", fontSize: 13, fontWeight: 600,
-                  transition: "background 150ms, color 150ms",
-                }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.05)"; (e.currentTarget as HTMLElement).style.color = "var(--text-primary)"; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)"; }}
-              >
-                <item.icon size={15} /> {item.label}
-              </Link>
-            ))}
-            <div style={{ height: 1, background: "var(--border-subtle)", margin: "4px 0" }} />
-            <button id="dropdown-logout" style={{
-              display: "flex", alignItems: "center", gap: 10,
-              padding: "10px 12px", borderRadius: "var(--radius-md)",
-              background: "none", border: "none", cursor: "pointer",
-              color: "var(--accent)", fontFamily: "Cairo, sans-serif",
-              fontSize: 13, fontWeight: 700, width: "100%",
-              transition: "background 150ms",
-            }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(232,48,74,0.08)"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
-            >
-              <LogOut size={15} /> تسجيل الخروج
-            </button>
+        <MenuItems
+          className="
+            absolute left-0 mt-2 w-52 origin-top-left
+            bg-[var(--bg-surface)] border border-[var(--border-default)]
+            rounded-xl shadow-[var(--shadow-md)] py-1 z-50
+            focus:outline-none animate-fade-up
+          "
+        >
+          <div className="px-4 py-3 border-b border-[var(--border-subtle)]">
+            <div className="text-sm font-bold text-[var(--text-primary)]">أحمد محمد</div>
+            <div className="text-xs text-[var(--text-muted)]">الصف الثالث</div>
           </div>
-        )}
-      </div>
+
+          <MenuItem>
+            <Link
+              href="/account"
+              id="dropdown-account"
+              className="flex items-center gap-3 px-4 py-2.5 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)] transition-colors"
+            >
+              <User size={15} />
+              حسابي
+            </Link>
+          </MenuItem>
+          <MenuItem>
+            <Link
+              href="/account"
+              id="dropdown-settings"
+              className="flex items-center gap-3 px-4 py-2.5 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)] transition-colors"
+            >
+              <Settings size={15} />
+              الإعدادات
+            </Link>
+          </MenuItem>
+
+          <div className="my-1 h-px bg-[var(--border-subtle)]" />
+
+          <MenuItem>
+            <button
+              id="dropdown-logout"
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[var(--accent)] hover:bg-[rgba(232,48,74,0.06)] transition-colors"
+            >
+              <LogOut size={15} />
+              تسجيل الخروج
+            </button>
+          </MenuItem>
+        </MenuItems>
+      </Menu>
     </header>
   );
 }

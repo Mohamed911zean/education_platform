@@ -1,205 +1,268 @@
 "use client";
-import Link from "next/link";
-import Sidebar from "../components/Sidebar";
-import DashboardNavbar from "../components/DashboardNavbar";
-import { BookOpen, Flame, Star, Clock, PlayCircle, Calendar, ChevronLeft, ArrowLeft } from "lucide-react";
 
-const ENROLLED_COURSES = [
-  { id: 1, title: "الأحياء — الصف الثالث الثانوي الكامل", progress: 68, lessons: 24, total: 60, subject: "أحياء", nextLesson: "الدرس 25: التكاثر الجنسي في الإنسان", lastStudied: "أمس" },
-  { id: 2, title: "كورس الإعداد الجيني والتكاثر", progress: 42, lessons: 5, total: 12, subject: "أحياء", nextLesson: "الدرس 6: الطفرات الجينية", lastStudied: "منذ 3 أيام" },
+import { useState } from "react";
+import Link from "next/link";
+import { Sidebar } from "@/app/components/Sidebar";
+import { DashboardNavbar } from "@/app/components/DashboardNavbar";
+import { CourseCard } from "@/app/components/shared/CourseCard";
+import {
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
+} from "recharts";
+import { Flame, Star, Clock, CheckCircle, ArrowLeft, Video, Calendar, BookOpen } from "lucide-react";
+
+/* ── Mock data ────────────────────────────────────────────── */
+const STATS = [
+  { icon: <Flame size={20} />, label: "أيام متواصلة", value: "7", unit: "يوم", color: "#e8304a" },
+  { icon: <Star size={20} />, label: "نقاط", value: "240", unit: "نقطة", color: "#f59e0b" },
+  { icon: <Clock size={20} />, label: "ساعات دراسة", value: "8.5", unit: "ساعة/أسبوع", color: "#3b82f6" },
+  { icon: <CheckCircle size={20} />, label: "دروس مكتملة", value: "24", unit: "درس", color: "#10b981" },
+];
+
+const WEEKLY_ACTIVITY = [
+  { day: "أحد", mins: 90 },
+  { day: "إثنين", mins: 0 },
+  { day: "ثلاثاء", mins: 150 },
+  { day: "أربعاء", mins: 60 },
+  { day: "خميس", mins: 120 },
+  { day: "جمعة", mins: 180 },
+  { day: "سبت", mins: 45 },
 ];
 
 const SCHEDULE = [
-  { day: "السبت", time: "8:00 م", title: "مراجعة: وحدة الجهاز العصبي", type: "live" },
-  { day: "الإثنين", time: "5:00 م", title: "حصة: التكاثر اللاجنسي", type: "lesson" },
-  { day: "الثلاثاء", time: "9:00 م", title: "اختبار: وحدة الخلية", type: "exam" },
+  { day: "السبت", time: "8م", title: "مراجعة الجهاز العصبي", type: "live" as const },
+  { day: "الإثنين", time: "5م", title: "التكاثر اللاجنسي", type: "lesson" as const },
+  { day: "الثلاثاء", time: "9م", title: "اختبار وحدة الخلية", type: "exam" as const },
 ];
 
-const STATS = [
-  { icon: "🔥", value: 7, label: "أيام متواصلة", sub: "سلسلة المذاكرة", color: "var(--accent)" },
-  { icon: "⭐", value: 240, label: "نقطة مكتسبة", sub: "↑ 50 هذا الأسبوع", color: "var(--accent-gold)" },
-  { icon: "⏱", value: "8.5", label: "ساعة مذاكرة", sub: "هذا الأسبوع", color: "var(--accent-blue)" },
-  { icon: "✅", value: 24, label: "درس مكتمل", sub: "↑ 12% هذا الأسبوع", color: "var(--accent-teal)" },
-];
+const typeStyles = {
+  live:   { bg: "rgba(232,48,74,0.1)",   color: "#e8304a",   label: "مباشر",   icon: <Video size={14} /> },
+  lesson: { bg: "rgba(59,130,246,0.1)",  color: "#3b82f6",  label: "درس",     icon: <BookOpen size={14} /> },
+  exam:   { bg: "rgba(245,158,11,0.1)",  color: "#f59e0b",  label: "اختبار",  icon: <Calendar size={14} /> },
+};
 
+/* ── SVG Progress Ring ─────────────────────────────────────── */
+function ProgressRing({ pct }: { pct: number }) {
+  const r = 54;
+  const circ = 2 * Math.PI * r;
+  const dash = (pct / 100) * circ;
+  return (
+    <svg width={128} height={128} className="progress-ring">
+      <circle cx={64} cy={64} r={r} fill="none" stroke="var(--bg-elevated)" strokeWidth={10} />
+      <circle
+        cx={64} cy={64} r={r} fill="none"
+        stroke="var(--accent)" strokeWidth={10}
+        strokeDasharray={`${dash} ${circ}`}
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+/* ── Custom Tooltip ─────────────────────────────────────────── */
+function ActivityTooltip({ active, payload, label }: { active?: boolean; payload?: { value: number }[]; label?: string }) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="card px-3 py-2 text-xs" style={{ fontFamily: "var(--font-cairo)" }}>
+      <div style={{ color: "var(--text-muted)" }}>{label}</div>
+      <div style={{ color: "var(--accent)", fontWeight: 700 }}>{payload[0].value} دقيقة</div>
+    </div>
+  );
+}
+
+/* ── Page ──────────────────────────────────────────────────── */
 export default function DashboardPage() {
-  const overallProgress = 72;
-  const circumference = 2 * Math.PI * 45;
+  const [collapsed, setCollapsed] = useState(false);
+  const sidebarWidth = collapsed ? 56 : 230;
 
   return (
-    <div dir="rtl" style={{ display: "flex", minHeight: "100vh", background: "var(--bg-base)" }}>
-      <Sidebar />
+    <div className="min-h-screen bg-[var(--bg-base)]">
+      <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
 
-      <main className="dashboard-layout" style={{ marginRight: 230, flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
-        <DashboardNavbar breadcrumb={[{ label: "الرئيسية", href: "/dashboard" }, { label: "Dashboard" }]} />
+      <div
+        className="dashboard-layout transition-all duration-200"
+        style={{ paddingRight: sidebarWidth }}
+      >
+        <DashboardNavbar breadcrumb={[{ label: "الرئيسية" }]} />
 
-        <div style={{ padding: "28px 28px 80px", display: "flex", flexDirection: "column", gap: 24 }}>
+        <main className="p-6 space-y-6 max-w-7xl">
 
-          {/* Welcome banner */}
-          <div style={{
-            background: "var(--bg-surface)",
-            border: "1px solid var(--border-default)",
-            borderRight: "4px solid var(--accent)",
-            borderRadius: "var(--radius-lg)",
-            padding: "24px 28px",
-            display: "flex", alignItems: "center", gap: 24,
-            flexWrap: "wrap",
-          }}>
-            <div style={{ flex: 1, minWidth: 200 }}>
-              <div style={{ fontFamily: "Cairo, sans-serif", fontSize: 22, fontWeight: 800, color: "var(--text-primary)", marginBottom: 6 }}>
-                👋 صباح الخير، أحمد
-              </div>
-              <div style={{ fontFamily: "Cairo, sans-serif", fontSize: 14, color: "var(--text-secondary)" }}>
-                عندك 3 دروس لازم تكملوا النهاردة — ابدأ دلوقتي!
-              </div>
-            </div>
-            {/* Circular progress */}
-            <div style={{ display: "flex", alignItems: "center", gap: 16, flexShrink: 0 }}>
-              <svg width={90} height={90} className="progress-ring">
-                <circle cx={45} cy={45} r={38} stroke="rgba(255,255,255,0.05)" strokeWidth={7} fill="none" />
-                <circle
-                  cx={45} cy={45} r={38}
-                  stroke="var(--accent-teal)" strokeWidth={7} fill="none"
-                  strokeLinecap="round"
-                  strokeDasharray={2 * Math.PI * 38}
-                  strokeDashoffset={2 * Math.PI * 38 * (1 - overallProgress / 100)}
-                />
-                <text x={45} y={50} textAnchor="middle"
-                  style={{ fontFamily: "Cairo, sans-serif", fontSize: 16, fontWeight: 800, fill: "var(--text-primary)" }}>
-                  {overallProgress}%
-                </text>
-              </svg>
-              <div>
-                <div style={{ fontFamily: "Cairo, sans-serif", fontSize: 13, color: "var(--text-muted)", marginBottom: 2 }}>إجمالي التقدم</div>
-                <div style={{ fontFamily: "Cairo, sans-serif", fontSize: 11, color: "var(--text-secondary)" }}>3 دروس متبقية اليوم</div>
-              </div>
-            </div>
-            <Link href="/courses" className="btn btn-primary" id="dashboard-continue-btn">
-              استكمل التعلم ←
-            </Link>
-          </div>
-
-          {/* Stats row */}
-          <div className="dashboard-stats-row" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
-            {STATS.map((s, i) => (
-              <div key={i} className="card" style={{ padding: "20px", textAlign: "center" }}>
-                <div style={{ fontSize: 28, marginBottom: 8 }}>{s.icon}</div>
-                <div style={{ fontFamily: "Syne, var(--font-syne), sans-serif", fontSize: 28, fontWeight: 800, color: s.color, lineHeight: 1 }}>
-                  {s.value}
-                </div>
-                <div style={{ fontFamily: "Cairo, sans-serif", fontSize: 13, color: "var(--text-secondary)", marginTop: 4 }}>{s.label}</div>
-                <div style={{ fontFamily: "Cairo, sans-serif", fontSize: 11, color: "var(--text-muted)", marginTop: 3 }}>{s.sub}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* My Courses */}
-          <div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-              <h2 style={{ fontFamily: "Cairo, sans-serif", fontSize: 18, fontWeight: 800, color: "var(--text-primary)" }}>كورساتي</h2>
-              <Link href="/courses" id="view-all-courses" style={{ fontFamily: "Cairo, sans-serif", fontSize: 13, color: "var(--accent)", textDecoration: "none", display: "flex", alignItems: "center", gap: 4 }}>
-                عرض الكل <ArrowLeft size={14} />
+          {/* ── Welcome Banner ────────────────────────────── */}
+          <section
+            id="welcome-banner"
+            className="
+              relative overflow-hidden rounded-2xl p-6
+              flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6
+              animate-fade-up
+            "
+            style={{ background: "linear-gradient(135deg, var(--accent) 0%, #ff6b35 100%)" }}
+          >
+            {/* BG decoration */}
+            <div
+              className="absolute -top-10 -left-10 w-48 h-48 rounded-full opacity-10"
+              style={{ background: "white" }}
+            />
+            <div className="relative">
+              <p className="text-white/80 text-sm mb-1" style={{ fontFamily: "var(--font-cairo)" }}>
+                مرحباً بك عائداً  👋
+              </p>
+              <h1 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: "var(--font-cairo)" }}>
+                أحمد محمد
+              </h1>
+              <p className="text-white/70 text-sm" style={{ fontFamily: "var(--font-cairo)" }}>
+                استمر في التقدم — أنت على بُعد خطوات من هدفك
+              </p>
+              <Link
+                href="/courses"
+                id="banner-start-btn"
+                className="mt-4 inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white text-sm font-bold px-4 py-2 rounded-xl transition-colors"
+                style={{ fontFamily: "var(--font-cairo)" }}
+              >
+                ابدأ الدرس التالي <ArrowLeft size={15} />
               </Link>
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              {ENROLLED_COURSES.map(course => (
-                <div key={course.id} className="card" style={{ padding: "20px" }}>
-                  <div style={{ display: "flex", gap: 16, alignItems: "flex-start", flexWrap: "wrap" }}>
-                    <div style={{
-                      width: 56, height: 56, borderRadius: "var(--radius-md)",
-                      background: "rgba(232,48,74,0.08)", border: "1px solid rgba(232,48,74,0.15)",
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      flexShrink: 0,
-                    }}>
-                      <BookOpen size={24} color="var(--accent)" strokeWidth={1.5} />
-                    </div>
-                    <div style={{ flex: 1, minWidth: 200 }}>
-                      <div style={{ fontFamily: "Cairo, sans-serif", fontSize: 16, fontWeight: 800, color: "var(--text-primary)", marginBottom: 4 }}>{course.title}</div>
-                      <div style={{ fontFamily: "Cairo, sans-serif", fontSize: 13, color: "var(--text-muted)", marginBottom: 12, display: "flex", alignItems: "center", gap: 5 }}>
-                        <PlayCircle size={13} /> التالي: {course.nextLesson}
-                      </div>
-                      <div className="progress-track" style={{ marginBottom: 6 }}>
-                        <div className="progress-fill" style={{ width: `${course.progress}%` }} />
-                      </div>
-                      <div style={{ display: "flex", justifyContent: "space-between" }}>
-                        <span style={{ fontFamily: "Cairo, sans-serif", fontSize: 11, color: "var(--text-muted)" }}>{course.lessons} / {course.total} درس</span>
-                        <span style={{ fontFamily: "Cairo, sans-serif", fontSize: 11, color: "var(--accent-teal)", fontWeight: 700 }}>{course.progress}%</span>
-                      </div>
-                    </div>
-                    <Link href="/courses" className="btn btn-teal btn-sm" style={{ flexShrink: 0 }} id={`continue-course-${course.id}`}>
-                      استكمل ←
-                    </Link>
+
+            {/* Progress ring */}
+            <div className="relative flex-shrink-0">
+              <ProgressRing pct={72} />
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-2xl font-bold text-white" style={{ fontFamily: "var(--font-syne)" }}>72%</span>
+                <span className="text-white/70 text-xs" style={{ fontFamily: "var(--font-cairo)" }}>إتمام الكورس</span>
+              </div>
+            </div>
+          </section>
+
+          {/* ── Stats row ─────────────────────────────────── */}
+          <section className="dashboard-stats-row grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {STATS.map((s, i) => (
+              <div
+                key={i}
+                className={`card animate-fade-up stagger-${i + 1} flex items-center gap-4`}
+              >
+                <div
+                  className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+                  style={{ background: `${s.color}18`, color: s.color }}
+                >
+                  {s.icon}
+                </div>
+                <div>
+                  <div
+                    className="text-xl font-bold leading-none"
+                    style={{ fontFamily: "var(--font-syne)", color: s.color }}
+                  >
+                    {s.value}
+                  </div>
+                  <div className="text-xs mt-0.5" style={{ fontFamily: "var(--font-cairo)", color: "var(--text-muted)" }}>
+                    {s.label}
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Bottom grid */}
-          <div className="dashboard-bottom-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
-            {/* Upcoming schedule */}
-            <div className="card">
-              <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 16 }}>
-                <Calendar size={16} color="var(--accent)" />
-                <span style={{ fontFamily: "Cairo, sans-serif", fontSize: 16, fontWeight: 800, color: "var(--text-primary)" }}>الجدول القادم</span>
               </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                {SCHEDULE.map((s, i) => (
-                  <div key={i} style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                    <div style={{
-                      width: 48, borderRadius: "var(--radius-sm)",
-                      background: s.type === "live" ? "rgba(232,48,74,0.1)" : s.type === "exam" ? "rgba(245,158,11,0.1)" : "rgba(59,130,246,0.1)",
-                      border: `1px solid ${s.type === "live" ? "rgba(232,48,74,0.2)" : s.type === "exam" ? "rgba(245,158,11,0.2)" : "rgba(59,130,246,0.2)"}`,
-                      padding: "6px 4px", textAlign: "center", flexShrink: 0,
-                    }}>
-                      <div style={{ fontFamily: "Cairo, sans-serif", fontSize: 10, fontWeight: 700, color: "var(--text-muted)" }}>{s.day}</div>
-                      <div style={{ fontFamily: "Cairo, sans-serif", fontSize: 11, fontWeight: 800, color: "var(--text-primary)" }}>{s.time}</div>
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontFamily: "Cairo, sans-serif", fontSize: 13, fontWeight: 700, color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.title}</div>
-                      <div style={{ fontFamily: "Cairo, sans-serif", fontSize: 11, color: s.type === "live" ? "var(--accent)" : s.type === "exam" ? "var(--accent-gold)" : "var(--accent-blue)" }}>
-                        {s.type === "live" ? "🔴 لايف" : s.type === "exam" ? "📝 اختبار" : "📖 درس"}
+            ))}
+          </section>
+
+          {/* ── My Courses ────────────────────────────────── */}
+          <section id="my-courses" className="animate-fade-up stagger-2">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold" style={{ fontFamily: "var(--font-cairo)", color: "var(--text-primary)" }}>
+                كورساتي
+              </h2>
+              <Link href="/courses" id="view-all-courses" className="text-sm font-bold" style={{ color: "var(--accent)", fontFamily: "var(--font-cairo)" }}>
+                عرض الكل
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <CourseCard
+                variant="enrolled"
+                id="genetics-course"
+                title="الأحياء — الوراثة والتطور"
+                progress={68}
+                lessonsTotal={60}
+                lessonsDone={24}
+                nextLesson="درس 25"
+                rating={4.9}
+                instructorName="مستر أحمد النجار"
+                gradientFrom="#e8304a"
+                gradientTo="#ff6b35"
+              />
+              <CourseCard
+                variant="enrolled"
+                id="genetic-prep-course"
+                title="كورس الإعداد الجيني"
+                progress={42}
+                lessonsTotal={12}
+                lessonsDone={5}
+                nextLesson="درس 6"
+                rating={4.7}
+                instructorName="مستر أحمد النجار"
+                gradientFrom="#3b82f6"
+                gradientTo="#8b5cf6"
+              />
+            </div>
+          </section>
+
+          {/* ── Bottom grid: Schedule + Activity ─────────── */}
+          <section className="dashboard-bottom-grid grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+            {/* Schedule */}
+            <div className="card animate-fade-up stagger-3">
+              <h3 className="text-base font-bold mb-4" style={{ fontFamily: "var(--font-cairo)", color: "var(--text-primary)" }}>
+                الجلسات القادمة
+              </h3>
+              <div className="space-y-3">
+                {SCHEDULE.map((item, i) => {
+                  const s = typeStyles[item.type];
+                  return (
+                    <div
+                      key={i}
+                      id={`schedule-item-${i}`}
+                      className="flex items-center gap-3 p-3 rounded-xl border"
+                      style={{ borderColor: "var(--border-subtle)", background: "var(--bg-elevated)" }}
+                    >
+                      <div
+                        className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
+                        style={{ background: s.bg, color: s.color }}
+                      >
+                        {s.icon}
                       </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-bold truncate" style={{ fontFamily: "var(--font-cairo)", color: "var(--text-primary)" }}>
+                          {item.title}
+                        </div>
+                        <div className="text-xs" style={{ fontFamily: "var(--font-cairo)", color: "var(--text-muted)" }}>
+                          {item.day} — {item.time}
+                        </div>
+                      </div>
+                      <span className="text-xs font-bold px-2 py-1 rounded-lg" style={{ background: s.bg, color: s.color, fontFamily: "var(--font-cairo)" }}>
+                        {s.label}
+                      </span>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
-            {/* Weekly activity */}
-            <div className="card">
-              <div style={{ fontFamily: "Cairo, sans-serif", fontSize: 16, fontWeight: 800, color: "var(--text-primary)", marginBottom: 16 }}>
-                نشاط الأسبوع
-              </div>
-              <div style={{ display: "flex", alignItems: "flex-end", gap: 8, height: 100 }}>
-                {[
-                  { day: "ح", mins: 90 }, { day: "ن", mins: 0 }, { day: "ث", mins: 150 },
-                  { day: "ر", mins: 60 }, { day: "خ", mins: 120 }, { day: "ج", mins: 180 }, { day: "س", mins: 45 },
-                ].map((d, i) => (
-                  <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 5, height: "100%" }}>
-                    <div style={{
-                      flex: 1, width: "100%", display: "flex", alignItems: "flex-end",
-                    }}>
-                      <div style={{
-                        width: "100%",
-                        height: d.mins > 0 ? `${Math.max(8, (d.mins / 180) * 80)}px` : "8px",
-                        background: d.mins > 0 ? "var(--accent)" : "var(--bg-elevated)",
-                        borderRadius: "4px 4px 0 0",
-                        opacity: d.mins > 0 ? 0.85 : 0.4,
-                      }} />
-                    </div>
-                    <span style={{ fontFamily: "Cairo, sans-serif", fontSize: 10, color: "var(--text-muted)" }}>{d.day}</span>
-                  </div>
-                ))}
-              </div>
-              <div style={{ marginTop: 10, fontFamily: "Cairo, sans-serif", fontSize: 12, color: "var(--text-muted)", textAlign: "center" }}>
-                إجمالي هذا الأسبوع: 8.5 ساعة مذاكرة
-              </div>
+            {/* Weekly activity chart */}
+            <div className="card animate-fade-up stagger-4">
+              <h3 className="text-base font-bold mb-4" style={{ fontFamily: "var(--font-cairo)", color: "var(--text-primary)" }}>
+                النشاط الأسبوعي
+              </h3>
+              <ResponsiveContainer width="100%" height={180}>
+                <BarChart data={WEEKLY_ACTIVITY} barCategoryGap="30%">
+                  <CartesianGrid vertical={false} stroke="var(--border-subtle)" />
+                  <XAxis
+                    dataKey="day"
+                    tick={{ fontFamily: "Cairo", fontSize: 11, fill: "var(--text-muted)" }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <YAxis hide />
+                  <Tooltip content={<ActivityTooltip />} cursor={{ fill: "var(--border-subtle)" }} />
+                  <Bar dataKey="mins" fill="var(--accent)" radius={[6, 6, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
-          </div>
-
-        </div>
-      </main>
+          </section>
+        </main>
+      </div>
     </div>
   );
 }

@@ -1,36 +1,82 @@
 @import "tailwindcss";
 
-/* ─── Design Tokens ─────────────────────────────────────── */
+/* ─── Tailwind v4 Theme Configuration ────────────────────── */
+@theme {
+  /* Dark mode strategy: class-based */
+  --default-dark-mode: class;
+
+  /* Font families */
+  --font-family-cairo: 'Cairo', 'sans-serif';
+  --font-family-syne:  'Syne', 'sans-serif';
+
+  /* Custom animations */
+  --animate-fade-up: fadeUp 0.4s ease both;
+
+  /* Keyframes (must be declared here for Tailwind to generate animate-* utils) */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* ─── Design Tokens — Light Mode (default) ───────────────── */
 :root {
   /* Backgrounds */
-  --bg-base:       #121212;
-  --bg-surface:    #0b0c0f;
-  --bg-elevated:   #1a1e2a;
+  --bg-base:       #f8fafc;
+  --bg-surface:    #ffffff;
+  --bg-elevated:   #f1f5f9;
+  --bg-overlay:    #e2e8f0;
+
+  /* Typography */
+  --text-primary:   #0f172a;
+  --text-secondary: #475569;
+  --text-muted:     #94a3b8;
+
+  /* Borders */
+  --border-subtle:  rgba(0,0,0,0.04);
+  --border-default: rgba(0,0,0,0.08);
+  --border-strong:  rgba(0,0,0,0.15);
+
+  /* Shadows — lighter for light mode */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.12);
+  --shadow-md:  0 4px 16px rgba(0,0,0,0.18);
+  --shadow-lg:  0 8px 32px rgba(0,0,0,0.22);
+  --shadow-glow: 0 0 24px rgba(232,48,74,0.14);
+}
+
+/* ─── Design Tokens — Dark Mode ──────────────────────────── */
+.dark {
+  --bg-base:       #0d0f18;
+  --bg-surface:    #131620;
+  --bg-elevated:   #1a1e2c;
   --bg-overlay:    #20253a;
 
+  --text-primary:   #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted:     #475569;
+
+  --border-subtle:  rgba(255,255,255,0.04);
+  --border-default: rgba(255,255,255,0.08);
+  --border-strong:  rgba(255,255,255,0.15);
+
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md:  0 4px 16px rgba(0,0,0,0.45);
+  --shadow-lg:  0 8px 32px rgba(0,0,0,0.5);
+  --shadow-glow: 0 0 24px rgba(232,48,74,0.18);
+}
+
+/* ─── Shared Brand Tokens (both modes) ───────────────────── */
+:root, .dark {
   /* Brand — single teacher accent (coral-red) */
   --accent:        #e8304a;
   --accent-hover:  #c8273f;
   --accent-teal:   #10b981;
   --accent-gold:   #f59e0b;
   --accent-blue:   #3b82f6;
+  --accent-warm:   #ff6b35;
 
-  /* Typography */
-  --text-primary:   #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-muted:     #475569;
-
-  /* Borders */
-  --border-subtle:  rgba(255,255,255,0.04);
-  --border-default: rgba(255,255,255,0.08);
-  --border-strong:  rgba(255,255,255,0.15);
-  --border-accent:  rgba(232,48,74,0.3);
-
-  /* Shadows */
-  --shadow-sm:  0 1px 3px rgba(0,0,0,0.4);
-  --shadow-md:  0 4px 16px rgba(0,0,0,0.45);
-  --shadow-lg:  0 8px 32px rgba(0,0,0,0.5);
-  --shadow-glow: 0 0 24px rgba(232,48,74,0.18);
+  /* Accent border */
+  --border-accent: rgba(232,48,74,0.3);
 
   /* Radius */
   --radius-sm:   8px;
@@ -38,9 +84,13 @@
   --radius-lg:   16px;
   --radius-xl:   24px;
   --radius-full: 9999px;
+
+  /* Font families (set via CSS vars from next/font) */
+  --font-cairo: 'Cairo', sans-serif;
+  --font-syne:  'Syne', sans-serif;
 }
 
-/* ─── Reset & Base ──────────────────────────────────────── */
+/* ─── Reset & Base ───────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html {
@@ -57,19 +107,19 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ─── Page wrapper ──────────────────────────────────────── */
+/* ─── Page wrapper ───────────────────────────────────────── */
 .page-bg {
   min-height: 100vh;
   background: var(--bg-base);
 }
 
-/* ─── Scrollbar ─────────────────────────────────────────── */
+/* ─── Scrollbar ──────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg-base); }
 ::-webkit-scrollbar-thumb { background: var(--bg-elevated); border-radius: 99px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
 
-/* ─── Typography helpers ────────────────────────────────── */
+/* ─── Typography helpers ─────────────────────────────────── */
 .font-display { font-family: var(--font-syne), 'Syne', sans-serif; }
 .section-title {
   font-family: 'Cairo', sans-serif;
@@ -86,7 +136,7 @@ body {
   line-height: 1.8;
 }
 
-/* ─── Gradient text ─────────────────────────────────────── */
+/* ─── Gradient text ──────────────────────────────────────── */
 .gradient-text {
   background: linear-gradient(135deg, var(--accent), #ff6b35);
   -webkit-background-clip: text;
@@ -94,7 +144,7 @@ body {
   background-clip: text;
 }
 
-/* ─── Buttons ───────────────────────────────────────────── */
+/* ─── Buttons ────────────────────────────────────────────── */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -129,7 +179,7 @@ body {
 
 .btn-ghost {
   background: transparent;
-  border: none;
+  border: 1.5px solid var(--border-default);
   color: var(--text-secondary);
 }
 .btn-ghost:hover { color: var(--text-primary); background: var(--bg-elevated); }
@@ -161,7 +211,7 @@ body {
 .btn-full { width: 100%; }
 .btn-icon { padding: 9px; border-radius: var(--radius-md); }
 
-/* ─── Cards ─────────────────────────────────────────────── */
+/* ─── Cards ──────────────────────────────────────────────── */
 .card {
   background: var(--bg-surface);
   border: 1px solid var(--border-default);
@@ -183,10 +233,13 @@ body {
 }
 
 .card-glass {
-  background: rgba(19,22,31,0.85);
+  background: rgba(255,255,255,0.6);
   backdrop-filter: blur(16px);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
+}
+.dark .card-glass {
+  background: rgba(19,22,31,0.85);
 }
 
 .card-achievement {
@@ -195,7 +248,7 @@ body {
   border-radius: var(--radius-lg);
 }
 
-/* ─── Badges ─────────────────────────────────────────────── */
+/* ─── Badges ──────────────────────────────────────────────── */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -232,12 +285,15 @@ body {
   50%       { opacity: 0.4; }
 }
 
-/* ─── Progress Bar ──────────────────────────────────────── */
+/* ─── Progress Bar ───────────────────────────────────────── */
 .progress-track {
   height: 6px;
-  background: rgba(255,255,255,0.05);
+  background: var(--bg-elevated);
   border-radius: 99px;
   overflow: hidden;
+}
+.dark .progress-track {
+  background: rgba(255,255,255,0.05);
 }
 .progress-fill {
   height: 100%;
@@ -246,7 +302,7 @@ body {
   transition: width 0.5s ease;
 }
 
-/* ─── Form Inputs ───────────────────────────────────────── */
+/* ─── Form Inputs ────────────────────────────────────────── */
 .form-input {
   width: 100%;
   background: var(--bg-elevated);
@@ -273,7 +329,7 @@ body {
   font-family: 'Cairo', sans-serif;
 }
 
-/* ─── Toggle Switch ─────────────────────────────────────── */
+/* ─── Toggle Switch ──────────────────────────────────────── */
 .toggle {
   position: relative;
   width: 46px;
@@ -304,7 +360,7 @@ body {
 .toggle input:checked + .toggle-slider { background: var(--accent-teal); border-color: var(--accent-teal); }
 .toggle input:checked + .toggle-slider::before { transform: translateX(-20px); background: white; }
 
-/* ─── Avatar ─────────────────────────────────────────────── */
+/* ─── Avatar ──────────────────────────────────────────────── */
 .avatar-placeholder {
   border-radius: 50%;
   display: flex;
@@ -316,7 +372,7 @@ body {
 .avatar-ring-red  { outline: 2px solid var(--accent);      outline-offset: 2px; }
 .avatar-ring-blue { outline: 2px solid var(--accent-blue); outline-offset: 2px; }
 
-/* ─── Divider ───────────────────────────────────────────── */
+/* ─── Divider ────────────────────────────────────────────── */
 .divider {
   width: 100%;
   height: 1px;
@@ -324,7 +380,7 @@ body {
   margin: 16px 0;
 }
 
-/* ─── Overlay ───────────────────────────────────────────── */
+/* ─── Overlay ────────────────────────────────────────────── */
 .overlay-bg {
   position: fixed;
   inset: 0;
@@ -335,7 +391,7 @@ body {
   justify-content: center;
 }
 
-/* ─── Horizontal scroll ─────────────────────────────────── */
+/* ─── Horizontal scroll ──────────────────────────────────── */
 .scroll-x {
   display: flex;
   overflow-x: auto;
@@ -345,10 +401,10 @@ body {
 }
 .scroll-x::-webkit-scrollbar { display: none; }
 
-/* ─── Stars ──────────────────────────────────────────────── */
+/* ─── Stars ───────────────────────────────────────────────── */
 .stars { color: var(--accent-gold); font-size: 13px; letter-spacing: 1px; }
 
-/* ─── Eyebrow pill ──────────────────────────────────────── */
+/* ─── Eyebrow pill ───────────────────────────────────────── */
 .eyebrow-pill {
   display: inline-flex;
   align-items: center;
@@ -363,7 +419,7 @@ body {
   font-family: 'Cairo', sans-serif;
 }
 
-/* ─── Tabs ───────────────────────────────────────────────── */
+/* ─── Tabs ────────────────────────────────────────────────── */
 .tab-bar {
   display: flex;
   gap: 0;
@@ -383,7 +439,7 @@ body {
 .tab-item:hover { color: var(--text-secondary); }
 .tab-item.active { color: var(--accent); border-bottom-color: var(--accent); }
 
-/* ─── Pill filter tabs ───────────────────────────────────── */
+/* ─── Pill filter tabs ────────────────────────────────────── */
 .pill-tab {
   padding: 6px 14px;
   border-radius: var(--radius-full);
@@ -400,7 +456,7 @@ body {
 .pill-tab:hover { color: var(--text-secondary); border-color: var(--border-strong); }
 .pill-tab.active { background: var(--accent); border-color: var(--accent); color: white; }
 
-/* ─── Sparkline ──────────────────────────────────────────── */
+/* ─── Sparkline ───────────────────────────────────────────── */
 .sparkline { display: flex; align-items: flex-end; gap: 3px; height: 28px; }
 .sparkline-bar {
   flex: 1;
@@ -409,16 +465,16 @@ body {
   min-width: 4px;
 }
 
-/* ─── Chart bar ──────────────────────────────────────────── */
+/* ─── Chart bar ───────────────────────────────────────────── */
 .chart-bar { border-radius: 4px 4px 0 0; transition: opacity 150ms; }
 .chart-bar-active { background: var(--accent); opacity: 0.8; }
 .chart-bar-active:hover { opacity: 1; }
 .chart-bar-empty { background: rgba(255,255,255,0.04); border: 1px dashed var(--border-default); }
 
-/* ─── Progress ring ──────────────────────────────────────── */
+/* ─── Progress ring ───────────────────────────────────────── */
 .progress-ring { transform: rotate(-90deg); }
 
-/* ─── Bottom nav (mobile) ───────────────────────────────── */
+/* ─── Bottom nav (mobile) ────────────────────────────────── */
 .bottom-nav {
   display: none;
   position: fixed;
@@ -449,7 +505,7 @@ body {
 }
 .bottom-nav-item.active, .bottom-nav-item:hover { color: var(--accent); }
 
-/* ─── Keyframes (minimal — only essentials) ─────────────── */
+/* ─── Keyframes ──────────────────────────────────────────── */
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-8px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -466,8 +522,24 @@ body {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
+@keyframes pulseDotAnim {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-/* ─── Responsive ─────────────────────────────────────────── */
+/* ─── Animation utilities ────────────────────────────────── */
+.animate-fade-up { animation: fadeUp 0.4s ease both; }
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+.stagger-5 { animation-delay: 0.25s; }
+
+/* ─── Responsive ──────────────────────────────────────────── */
 @media (max-width: 1024px) {
   .sidebar { width: 56px !important; }
   .sidebar .sidebar-label,
@@ -498,7 +570,7 @@ body {
   .dashboard-stats-row { grid-template-columns: 1fr 1fr !important; }
 }
 
-/* ─── Teacher brand section ──────────────────────────────── */
+/* ─── Teacher brand section ───────────────────────────────── */
 .teacher-hero-img {
   border-radius: 50%;
   object-fit: cover;
