@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Bell, Search, ChevronDown, User, Settings, LogOut } from "lucide-react";
+import { Bell, Search, ChevronDown, User, Settings, LogOut, Calendar } from "lucide-react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ThemeToggle } from "@/app/components/ThemeToggle";
 
@@ -20,7 +20,7 @@ export function DashboardNavbar({ breadcrumb }: DashboardNavbarProps) {
       id="dashboard-navbar"
       className="
         sticky top-0 z-20
-        flex items-center gap-4 px-6 h-16
+        flex items-center gap-2 sm:gap-4 px-4 sm:px-6 h-16
         bg-[var(--bg-surface)] border-b border-[var(--border-default)]
       "
     >
@@ -50,7 +50,7 @@ export function DashboardNavbar({ breadcrumb }: DashboardNavbarProps) {
       <div className="md:hidden flex-1" />
 
       {/* Search */}
-      <div className="relative hidden sm:block">
+      <div className="relative hidden lg:block">
         <Search
           size={14}
           className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]"
@@ -69,6 +69,16 @@ export function DashboardNavbar({ breadcrumb }: DashboardNavbarProps) {
           "
         />
       </div>
+
+      {/* Mobile Prominent Schedule Button */}
+      <Link
+        href="/schedule"
+        aria-label="جدول المذاكرة"
+        className="md:hidden flex items-center gap-1.5 px-3 h-9 rounded-xl bg-[rgba(232,48,74,0.08)] text-[var(--accent)] hover:bg-[rgba(232,48,74,0.15)] transition-colors font-bold text-xs font-cairo"
+      >
+        <Calendar size={16} />
+        الجدول
+      </Link>
 
       {/* Theme toggle */}
       <ThemeToggle />
