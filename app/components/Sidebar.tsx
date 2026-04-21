@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   BookMarked, Home, BookOpen, TrendingUp, Trophy,
   MessageSquare, Calendar, Settings, LogOut,
-  ChevronLeft, ChevronRight,
+  ChevronLeft, ChevronRight, Compass, BookmarkCheck
 } from "lucide-react";
 
 interface NavItem {
@@ -14,15 +14,29 @@ interface NavItem {
   label: string;
   badge?: number;
   id: string;
+  subItems?: { href: string; label: string }[];
 }
 
 const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard", icon: <Home size={18} />, label: "الرئيسية", id: "nav-home" },
-  { href: "/courses",   icon: <BookOpen size={18} />, label: "كورساتي", badge: 3, id: "nav-courses" },
+  { 
+    href: "/courses",   icon: <BookOpen size={18} />, label: "الكورسات", badge: 3, id: "nav-courses",
+    subItems: [
+      { href: "/courses", label: "جميع الكورسات" },
+      { href: "/courses/suggested", label: "مقترحة لك" },
+      { href: "/courses/enrolled", label: "مشترك فيها" },
+    ]
+  },
   { href: "/progress",  icon: <TrendingUp size={18} />, label: "تقدمي", id: "nav-progress" },
-  { href: "/achievements", icon: <Trophy size={18} />, label: "الإنجازات", badge: 2, id: "nav-achievements" },
-  { href: "/forum",     icon: <MessageSquare size={18} />, label: "المنتدى", badge: 5, id: "nav-forum" },
   { href: "/schedule",  icon: <Calendar size={18} />, label: "الجدول", id: "nav-schedule" },
+];
+
+const BOTTOM_NAV_ITEMS = [
+  { href: "/dashboard", icon: <Home size={20} />, label: "الرئيسية" },
+  { href: "/courses", icon: <Compass size={20} />, label: "كل الكورسات" },
+  { href: "/courses/enrolled", icon: <BookmarkCheck size={20} />, label: "كورساتي" },
+  { href: "/courses/suggested", icon: <BookOpen size={20} />, label: "المقترحة" },
+  { href: "/progress", icon: <TrendingUp size={20} />, label: "تقدمي" }
 ];
 
 interface SidebarProps {
@@ -39,10 +53,10 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       <aside
         id="sidebar"
         className={`
-          hidden md:flex flex-col fixed top-0 right-0 h-full z-30
+          hidden md:flex flex-col sticky top-0 h-screen z-30 flex-shrink-0
           bg-[var(--bg-surface)] border-l border-[var(--border-default)]
-          transition-[width] duration-200 overflow-hidden
-          ${collapsed ? "w-14" : "w-[230px]"}
+          transition-[width] duration-300
+          ${collapsed ? "w-[72px]" : "w-[260px]"}
         `}
       >
         {/* Toggle button */}
@@ -107,35 +121,51 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         )}
 
         {/* Nav links */}
-        <nav className="flex-1 overflow-y-auto py-2 px-2">
+        <nav className="flex-1 overflow-y-auto overflow-x-hidden py-2 px-2">
           {NAV_ITEMS.map((item) => {
             const active = pathname === item.href || pathname.startsWith(item.href + "/");
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                id={item.id}
-                className={`
-                  nav-item flex items-center rounded-xl mb-0.5 text-sm font-bold transition-all duration-150
-                  ${collapsed ? "justify-center px-0 py-3" : "gap-2.5 px-3 py-2.5"}
-                  ${active
-                    ? "bg-[var(--accent)] text-white shadow-sm"
-                    : "text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)]"
-                  }
-                `}
-              >
-                <span className="flex-shrink-0">{item.icon}</span>
-                {!collapsed && (
-                  <>
-                    <span className="sidebar-label flex-1">{item.label}</span>
-                    {item.badge && (
-                      <span className={`text-xs px-1.5 py-0.5 rounded-full font-bold ${active ? "bg-white/20 text-white" : "bg-[var(--accent)] text-white"}`}>
-                        {item.badge}
-                      </span>
-                    )}
-                  </>
+              <div key={item.href} className="mb-0.5">
+                <Link
+                  href={item.href}
+                  id={item.id}
+                  className={`
+                    nav-item flex items-center rounded-xl text-sm font-bold transition-all duration-150 whitespace-nowrap
+                    ${collapsed ? "justify-center px-0 py-3" : "gap-2.5 px-3 py-2.5"}
+                    ${active
+                      ? "bg-[var(--accent)] text-white shadow-sm"
+                      : "text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)]"
+                    }
+                  `}
+                >
+                  <span className="flex-shrink-0">{item.icon}</span>
+                  {!collapsed && (
+                    <>
+                      <span className="sidebar-label flex-1 truncate">{item.label}</span>
+                      {item.badge && (
+                        <span className={`text-xs px-1.5 py-0.5 rounded-full font-bold ${active ? "bg-white/20 text-white" : "bg-[var(--accent)] text-white"}`}>
+                          {item.badge}
+                        </span>
+                      )}
+                    </>
+                  )}
+                </Link>
+                
+                {/* Sub-items */}
+                {!collapsed && item.subItems && active && (
+                  <div className="flex flex-col gap-1 mt-1 pr-9 animate-fade-up">
+                    {item.subItems.map(subItem => (
+                      <Link 
+                        key={subItem.label} 
+                        href={subItem.href}
+                        className="text-xs font-bold text-[var(--text-muted)] hover:text-[var(--accent)] py-1.5 transition-colors"
+                      >
+                        {subItem.label}
+                      </Link>
+                    ))}
+                  </div>
                 )}
-              </Link>
+              </div>
             );
           })}
         </nav>
@@ -169,17 +199,21 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       </aside>
 
       {/* ── Mobile Bottom Tab Bar ────────────────────────── */}
-      <nav className="bottom-nav md:hidden">
-        {NAV_ITEMS.slice(0, 5).map((item) => {
+      <nav className="bottom-nav md:hidden pb-safe">
+        {BOTTOM_NAV_ITEMS.map((item) => {
           const active = pathname === item.href;
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`bottom-nav-item ${active ? "active" : ""}`}
+              className={`bottom-nav-item flex flex-col items-center justify-center w-full h-full gap-1 pt-1 ${active ? "text-[var(--accent)]" : "text-[var(--text-muted)]"}`}
             >
-              {item.icon}
-              <span>{item.label}</span>
+              <div className={`transition-transform duration-200 ${active ? "-translate-y-0.5 text-[var(--accent)]" : ""}`}>
+                {item.icon}
+              </div>
+              <span className={`text-[10px] font-cairo transition-all duration-200 text-center whitespace-nowrap ${active ? "font-bold opacity-100" : "font-semibold opacity-70"}`}>
+                {item.label}
+              </span>
             </Link>
           );
         })}

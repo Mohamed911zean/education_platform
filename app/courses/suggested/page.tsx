@@ -5,9 +5,9 @@ import { Sidebar } from "@/app/components/Sidebar";
 import { DashboardNavbar } from "@/app/components/DashboardNavbar";
 import { CourseCard } from "@/app/components/shared/CourseCard";
 import { Search, LayoutGrid, List } from "lucide-react";
-import { ENROLLED, AVAILABLE, GRADES, SUBJECTS, Course } from "./data";
+import { AVAILABLE, GRADES, SUBJECTS } from "../data";
 
-export default function AllCoursesPage() {
+export default function SuggestedCoursesPage() {
   const [collapsed, setCollapsed] = useState(false);
 
   const [gradeFilter, setGradeFilter] = useState("الكل");
@@ -15,31 +15,28 @@ export default function AllCoursesPage() {
   const [search, setSearch] = useState("");
   const [gridView, setGridView] = useState(true);
 
-  // Combine all courses for this page
-  const ALL_COURSES = [...ENROLLED, ...AVAILABLE];
-
   const filteredCourses = useMemo(() => {
-    return ALL_COURSES.filter((c) => {
+    return AVAILABLE.filter((c) => {
       const matchGrade = gradeFilter === "الكل" || c.grade === gradeFilter;
       const matchSubject = subjectFilter === "الكل" || c.subject === subjectFilter;
       const matchSearch = search.trim() === "" || c.title.includes(search) || c.subtitle?.includes(search);
       return matchGrade && matchSubject && matchSearch;
     });
-  }, [gradeFilter, subjectFilter, search, ALL_COURSES]);
+  }, [gradeFilter, subjectFilter, search]);
 
   return (
     <div className="flex min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)]" dir="rtl">
       <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
 
       <div className="flex-1 flex flex-col min-w-0 transition-all duration-300">
-        <DashboardNavbar breadcrumb={[{ label: "الرئيسية", href: "/dashboard" }, { label: "جميع الكورسات" }]} />
+        <DashboardNavbar breadcrumb={[{ label: "الرئيسية", href: "/dashboard" }, { label: "الكورسات", href: "/courses" }, { label: "كورسات مقترحة لك" }]} />
 
         <main className="flex-1 p-4 pb-24 md:p-6 lg:p-8 overflow-y-auto space-y-8 max-w-7xl mx-auto w-full">
-
+          
           <div className="flex justify-between items-end">
             <div>
-              <h1 className="text-2xl font-bold font-cairo">جميع الكورسات</h1>
-              <p className="text-sm text-[var(--text-muted)] font-cairo mt-1">تصفح الكورسات المشترك فيها والمتاحة</p>
+              <h1 className="text-2xl font-bold font-cairo">كورسات مقترحة لك</h1>
+              <p className="text-sm text-[var(--text-muted)] font-cairo mt-1">المنهج الذي يناسب مستواك ومرحلتك الدراسية</p>
             </div>
           </div>
 
@@ -53,7 +50,6 @@ export default function AllCoursesPage() {
             "
           >
             <div className="flex flex-wrap items-center gap-3">
-              {/* Grade pills */}
               <div className="flex flex-wrap gap-2">
                 {GRADES.map((g) => (
                   <button
@@ -68,7 +64,6 @@ export default function AllCoursesPage() {
 
               <div className="w-px h-6 bg-[var(--border-default)] hidden xl:block" />
 
-              {/* Subject pills */}
               <div className="flex flex-wrap gap-2">
                 {SUBJECTS.map((s) => (
                   <button
@@ -82,13 +77,12 @@ export default function AllCoursesPage() {
               </div>
             </div>
 
-            {/* Search + grid toggle */}
             <div className="flex items-center gap-2 mr-auto w-full md:w-auto">
               <div className="relative flex-1 md:flex-none">
                 <Search size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
                 <input
                   type="search"
-                  placeholder="ابحث في الكورسات..."
+                  placeholder="ابحث في المقترحات..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="
@@ -111,10 +105,10 @@ export default function AllCoursesPage() {
           {/* ── Courses Grid ──────────────────────────── */}
           <section>
             {filteredCourses.length === 0 ? (
-              <div className="bg-[var(--bg-surface)] rounded-2xl border border-[var(--border-default)] text-center py-20 shadow-sm">
-                <BookOpen size={48} className="mx-auto text-[var(--border-strong)] mb-4" />
-                <div className="text-lg font-bold font-cairo text-[var(--text-primary)]">لا توجد كورسات</div>
-                <div className="text-sm text-[var(--text-muted)] font-cairo mt-1">حاول تغيير خيارات البحث أو التصفية</div>
+              <div className="bg-[var(--bg-surface)] rounded-2xl border border-[var(--border-default)] text-center py-20 shadow-sm animate-fade-up">
+                <CourseCard.IconPlaceholder />
+                <div className="text-lg font-bold font-cairo text-[var(--text-primary)] mt-4">لا توجد كورسات مقترحة حالياً</div>
+                <div className="text-sm text-[var(--text-muted)] font-cairo mt-1">ابحث باسم الدرس أو المادة</div>
               </div>
             ) : (
               <div className={`grid gap-4 animate-fade-up ${gridView ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
@@ -128,4 +122,12 @@ export default function AllCoursesPage() {
       </div>
     </div>
   );
+}
+// Hack to get a nice icon without importing new things if not strictly needed
+CourseCard.IconPlaceholder = function IconPlaceholder() {
+  return (
+    <div className="mx-auto w-16 h-16 rounded-full bg-[var(--bg-elevated)] flex items-center justify-center">
+       <span className="text-2xl">🔍</span>
+    </div>
+  )
 }

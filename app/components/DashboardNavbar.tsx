@@ -25,7 +25,7 @@ export function DashboardNavbar({ breadcrumb }: DashboardNavbarProps) {
       "
     >
       {/* Breadcrumb — RTL start (right) */}
-      <nav className="flex items-center gap-2 flex-1 min-w-0" aria-label="breadcrumb">
+      <nav className="hidden md:flex items-center gap-2 flex-1 min-w-0" aria-label="breadcrumb">
         {breadcrumb && breadcrumb.length > 0 ? (
           breadcrumb.map((crumb, i) => (
             <span key={i} className="flex items-center gap-2">
@@ -46,6 +46,8 @@ export function DashboardNavbar({ breadcrumb }: DashboardNavbarProps) {
           <span className="text-sm font-bold text-[var(--text-primary)]">لوحة التحكم</span>
         )}
       </nav>
+      {/* Spacer for mobile to keep icons aligned left */}
+      <div className="md:hidden flex-1" />
 
       {/* Search */}
       <div className="relative hidden sm:block">
