@@ -4,14 +4,14 @@ import { useState, useMemo } from "react";
 import { Sidebar } from "@/app/components/Sidebar";
 import { DashboardNavbar } from "@/app/components/DashboardNavbar";
 import { CourseCard } from "@/app/components/shared/CourseCard";
-import { Search, LayoutGrid, List } from "lucide-react";
-import { ENROLLED, AVAILABLE, GRADES, SUBJECTS, Course } from "./data";
+import { Search, LayoutGrid, List, BookOpen } from "lucide-react";
+import { ENROLLED, AVAILABLE, GRADES, UNITS } from "./data";
 
 export default function AllCoursesPage() {
   const [collapsed, setCollapsed] = useState(false);
 
   const [gradeFilter, setGradeFilter] = useState("الكل");
-  const [subjectFilter, setSubjectFilter] = useState("الكل");
+  const [unitFilter, setUnitFilter] = useState("الكل");
   const [search, setSearch] = useState("");
   const [gridView, setGridView] = useState(true);
 
@@ -21,11 +21,11 @@ export default function AllCoursesPage() {
   const filteredCourses = useMemo(() => {
     return ALL_COURSES.filter((c) => {
       const matchGrade = gradeFilter === "الكل" || c.grade === gradeFilter;
-      const matchSubject = subjectFilter === "الكل" || c.subject === subjectFilter;
+      const matchUnit = unitFilter === "الكل" || c.unit === unitFilter;
       const matchSearch = search.trim() === "" || c.title.includes(search) || c.subtitle?.includes(search);
-      return matchGrade && matchSubject && matchSearch;
+      return matchGrade && matchUnit && matchSearch;
     });
-  }, [gradeFilter, subjectFilter, search, ALL_COURSES]);
+  }, [gradeFilter, unitFilter, search, ALL_COURSES]);
 
   return (
     <div className="flex min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)]" dir="rtl">
@@ -39,7 +39,7 @@ export default function AllCoursesPage() {
           <div className="flex justify-between items-end">
             <div>
               <h1 className="text-2xl font-bold font-cairo">جميع الكورسات</h1>
-              <p className="text-sm text-[var(--text-muted)] font-cairo mt-1">تصفح الكورسات المشترك فيها والمتاحة</p>
+              <p className="text-sm text-[var(--text-muted)] font-cairo mt-1">تصفح منهج الأحياء مع مستر أحمد النجار</p>
             </div>
           </div>
 
@@ -68,15 +68,15 @@ export default function AllCoursesPage() {
 
               <div className="w-px h-6 bg-[var(--border-default)] hidden xl:block" />
 
-              {/* Subject pills */}
+              {/* Unit pills */}
               <div className="flex flex-wrap gap-2">
-                {SUBJECTS.map((s) => (
+                {UNITS.map((u) => (
                   <button
-                    key={s}
-                    className={`pill-tab ${subjectFilter === s ? "active" : ""}`}
-                    onClick={() => setSubjectFilter(s)}
+                    key={u}
+                    className={`pill-tab ${unitFilter === u ? "active" : ""}`}
+                    onClick={() => setUnitFilter(u)}
                   >
-                    {s}
+                    {u}
                   </button>
                 ))}
               </div>

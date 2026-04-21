@@ -5,24 +5,24 @@ import { Sidebar } from "@/app/components/Sidebar";
 import { DashboardNavbar } from "@/app/components/DashboardNavbar";
 import { CourseCard } from "@/app/components/shared/CourseCard";
 import { Search, LayoutGrid, List } from "lucide-react";
-import { AVAILABLE, GRADES, SUBJECTS } from "../data";
+import { AVAILABLE, GRADES, UNITS } from "../data";
 
 export default function SuggestedCoursesPage() {
   const [collapsed, setCollapsed] = useState(false);
 
   const [gradeFilter, setGradeFilter] = useState("الكل");
-  const [subjectFilter, setSubjectFilter] = useState("الكل");
+  const [unitFilter, setUnitFilter] = useState("الكل");
   const [search, setSearch] = useState("");
   const [gridView, setGridView] = useState(true);
 
   const filteredCourses = useMemo(() => {
     return AVAILABLE.filter((c) => {
       const matchGrade = gradeFilter === "الكل" || c.grade === gradeFilter;
-      const matchSubject = subjectFilter === "الكل" || c.subject === subjectFilter;
+      const matchUnit = unitFilter === "الكل" || c.unit === unitFilter;
       const matchSearch = search.trim() === "" || c.title.includes(search) || c.subtitle?.includes(search);
-      return matchGrade && matchSubject && matchSearch;
+      return matchGrade && matchUnit && matchSearch;
     });
-  }, [gradeFilter, subjectFilter, search]);
+  }, [gradeFilter, unitFilter, search]);
 
   return (
     <div className="flex min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)]" dir="rtl">
@@ -36,7 +36,7 @@ export default function SuggestedCoursesPage() {
           <div className="flex justify-between items-end">
             <div>
               <h1 className="text-2xl font-bold font-cairo">كورسات مقترحة لك</h1>
-              <p className="text-sm text-[var(--text-muted)] font-cairo mt-1">المنهج الذي يناسب مستواك ومرحلتك الدراسية</p>
+              <p className="text-sm text-[var(--text-muted)] font-cairo mt-1">منهج الأحياء الذي يناسب مستواك ومرحلتك الدراسية</p>
             </div>
           </div>
 
@@ -65,13 +65,13 @@ export default function SuggestedCoursesPage() {
               <div className="w-px h-6 bg-[var(--border-default)] hidden xl:block" />
 
               <div className="flex flex-wrap gap-2">
-                {SUBJECTS.map((s) => (
+                {UNITS.map((u) => (
                   <button
-                    key={s}
-                    className={`pill-tab ${subjectFilter === s ? "active" : ""}`}
-                    onClick={() => setSubjectFilter(s)}
+                    key={u}
+                    className={`pill-tab ${unitFilter === u ? "active" : ""}`}
+                    onClick={() => setUnitFilter(u)}
                   >
-                    {s}
+                    {u}
                   </button>
                 ))}
               </div>
@@ -106,7 +106,7 @@ export default function SuggestedCoursesPage() {
           <section>
             {filteredCourses.length === 0 ? (
               <div className="bg-[var(--bg-surface)] rounded-2xl border border-[var(--border-default)] text-center py-20 shadow-sm animate-fade-up">
-                <CourseCard.IconPlaceholder />
+                <IconPlaceholder />
                 <div className="text-lg font-bold font-cairo text-[var(--text-primary)] mt-4">لا توجد كورسات مقترحة حالياً</div>
                 <div className="text-sm text-[var(--text-muted)] font-cairo mt-1">ابحث باسم الدرس أو المادة</div>
               </div>
@@ -123,8 +123,7 @@ export default function SuggestedCoursesPage() {
     </div>
   );
 }
-// Hack to get a nice icon without importing new things if not strictly needed
-CourseCard.IconPlaceholder = function IconPlaceholder() {
+function IconPlaceholder() {
   return (
     <div className="mx-auto w-16 h-16 rounded-full bg-[var(--bg-elevated)] flex items-center justify-center">
        <span className="text-2xl">🔍</span>

@@ -11,17 +11,17 @@ import {
 import { TrendingUp, Target, Award, Clock, BookOpen, CheckCircle } from "lucide-react";
 
 /* ── Mock data ────────────────────────────────────────────── */
-const SUBJECT_PROGRESS = [
-  { subject: "الأحياء", progress: 75, total: 100, color: "#10b981", examsAvg: "85%" },
-  { subject: "الفيزياء", progress: 45, total: 100, color: "#3b82f6", examsAvg: "72%" },
-  { subject: "الكيمياء", progress: 60, total: 100, color: "#f59e0b", examsAvg: "88%" },
+const UNIT_PROGRESS = [
+  { subject: "الوراثة والبيولوجيا الجزيئية", progress: 85, total: 100, color: "#10b981", examsAvg: "88%" },
+  { subject: "التكاثر في الكائنات الحية", progress: 45, total: 100, color: "#3b82f6", examsAvg: "72%" },
+  { subject: "الدعامة والحركة", progress: 100, total: 100, color: "#f59e0b", examsAvg: "95%" },
 ];
 
 const RECENT_SCORES = [
-  { test: "اختبار الدعامة والحركة", subject: "الأحياء", score: 18, total: 20, date: "٢ مارس" },
-  { test: "اختبار التأثير المغناطيسي", subject: "الفيزياء", score: 14, total: 20, date: "٢٨ فبراير" },
-  { test: "اختبار الكيمياء العضوية", subject: "الكيمياء", score: 19, total: 20, date: "٢٥ فبراير" },
-  { test: "امتحان شامل على الباب الأول", subject: "الأحياء", score: 45, total: 50, date: "٢٠ فبراير" },
+  { test: "اختبار شامل على التكاثر", subject: "أحياء 3ث", score: 18, total: 20, date: "٢ مارس" },
+  { test: "تسميع الدعامة في النبات", subject: "أحياء 3ث", score: 14, total: 20, date: "٢٨ فبراير" },
+  { test: "اختبار DNA والـ RNA", subject: "أحياء 3ث", score: 19, total: 20, date: "٢٥ فبراير" },
+  { test: "امتحان شامل على الباب الأول", subject: "أحياء 3ث", score: 45, total: 50, date: "٢٠ فبراير" },
 ];
 
 const WEEKLY_HOURS = [
@@ -83,9 +83,9 @@ export default function ProgressPage() {
             {/* Left Column: Subject Progress */}
             <section className="lg:col-span-2 space-y-6">
               <div className="bg-[var(--bg-surface)] p-6 rounded-2xl border border-[var(--border-default)] shadow-sm">
-                <h2 className="text-lg font-bold font-cairo mb-6">التقدم حسب المادة</h2>
+                <h2 className="text-lg font-bold font-cairo mb-6">التقدم في وحدات الأحياء</h2>
                 <div className="space-y-6">
-                  {SUBJECT_PROGRESS.map((sub, i) => (
+                  {UNIT_PROGRESS.map((sub, i) => (
                     <div key={i} className="bg-[var(--bg-base)] p-4 rounded-xl border border-[var(--border-subtle)]">
                       <div className="flex justify-between items-center mb-3">
                         <div className="flex items-center gap-2">

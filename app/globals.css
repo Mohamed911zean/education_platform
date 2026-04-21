@@ -381,6 +381,14 @@ body {
 }
 .scroll-x::-webkit-scrollbar { display: none; }
 
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 /* ─── Stars ──────────────────────────────────────────────────── */
 .stars { color: var(--accent-gold); font-size: 13px; letter-spacing: 1px; }
 

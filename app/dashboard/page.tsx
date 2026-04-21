@@ -6,6 +6,7 @@ import { Sidebar } from "@/app/components/Sidebar";
 import { DashboardNavbar } from "@/app/components/DashboardNavbar";
 import { CourseCard } from "@/app/components/shared/CourseCard";
 import { Flame, Star, Clock, CheckCircle, ArrowLeft, Video, Calendar, BookOpen, ChevronLeft } from "lucide-react";
+import { ENROLLED } from "@/app/courses/data";
 
 /* ── Mock data ────────────────────────────────────────────── */
 const STATS = [
@@ -54,10 +55,10 @@ export default function DashboardPage() {
                 </p>
                 
                 <Link 
-                  href="/courses/biology" 
+                  href="/courses/enrolled" 
                   className="inline-flex items-center justify-center gap-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white text-sm font-bold px-6 py-3 rounded-xl transition-all shadow-sm active:scale-95 font-cairo w-full sm:w-auto"
                 >
-                  استكمال: الوراثة والتطور
+                  استكمال: الوراثة والبيولوجيا
                   <ArrowLeft size={16} />
                 </Link>
               </div>
@@ -134,32 +135,9 @@ export default function DashboardPage() {
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <CourseCard
-                  variant="enrolled"
-                  id="genetics-course"
-                  title="الأحياء — الوراثة والتطور"
-                  progress={68}
-                  lessonsTotal={60}
-                  lessonsDone={24}
-                  nextLesson="الدرس 25: الطفرات الجينية"
-                  rating={4.9}
-                  instructorName="مستر أحمد النجار"
-                  gradientFrom="#e8304a"
-                  gradientTo="#ff6b35"
-                />
-                <CourseCard
-                  variant="enrolled"
-                  id="genetic-prep-course"
-                  title="كورس الإعداد الجيني"
-                  progress={42}
-                  lessonsTotal={12}
-                  lessonsDone={5}
-                  nextLesson="الدرس 6: تطبيقات الجينوم"
-                  rating={4.7}
-                  instructorName="مستر أحمد النجار"
-                  gradientFrom="#3b82f6"
-                  gradientTo="#8b5cf6"
-                />
+                {ENROLLED.slice(0, 2).map((c) => (
+                  <CourseCard key={c.id} {...(c as Parameters<typeof CourseCard>[0])} />
+                ))}
               </div>
             </section>
 
